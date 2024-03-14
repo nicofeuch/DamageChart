@@ -1,14 +1,30 @@
 package com.example;
 
+import net.runelite.client.RuneLite;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
 
 import java.awt.*;
+import com.example.ExamplePlugin;
 
 @ConfigGroup("example")
 public interface ExampleConfig extends Config
 {
+	@ConfigItem(
+
+			keyName = "damageDealt",
+			name = "Damage Dealt",
+			description = "Displays damage dealt by the player"
+
+	)
+	default int damageDealt()
+	{
+		ExamplePlugin plugin = new ExamplePlugin(); // Get the plugin instance
+		return plugin.getMyDamageDealt(); // Access the damage dealt field
+	}
+
+
 	@ConfigItem(
 			keyName = "greeting",
 			name = "Welcome Greeting",

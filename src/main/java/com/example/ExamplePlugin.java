@@ -22,7 +22,7 @@ import java.awt.*;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Group Damage Chart"
+	name = "pp"
 )
 public class ExamplePlugin extends Plugin
 {
@@ -32,7 +32,7 @@ public class ExamplePlugin extends Plugin
 	@Inject
 	private ExampleConfig config;
 
-	public int myDamageDealt;
+	private int myDamageDealt;
 
 	@Override
 	protected void startUp() throws Exception
@@ -51,7 +51,7 @@ public class ExamplePlugin extends Plugin
 	@Subscribe
 	public void onPlayerHit(HitsplatApplied event)
 	{
-		// Check if the hit was dealt by the player
+		//Check if the hit was dealt by the player
 		if (event.getActor() != client.getLocalPlayer()) {
 			return;
 		}
@@ -63,6 +63,12 @@ public class ExamplePlugin extends Plugin
 		// You can do further processing with the damage value here
 		System.out.println("Player dealt " + damage + " damage.");
 
+	}
+
+	// Getter method for myDamageDealt
+	public int getMyDamageDealt()
+	{
+		return myDamageDealt;
 	}
 
 
