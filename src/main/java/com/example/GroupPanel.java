@@ -11,7 +11,6 @@ import com.google.inject.Inject;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import net.runelite.client.callback.ClientThread;
-import net.runelite.client.party.WSClient;
 
 
 import net.runelite.api.Client;
@@ -27,7 +26,7 @@ public class GroupPanel extends PluginPanel {
     JLabel passphraseLabel = new JLabel();
 
     // Buttons
-    JButton createParty = new JButton("Create Party");
+    JButton createPartyButton = new JButton("Create Party");
     JButton joinParty = new JButton("Join Party");
     JButton leaveParty = new JButton("Leave Party");
     JButton copyPassphrase = new JButton("Copy Passphrase");
@@ -52,7 +51,7 @@ public class GroupPanel extends PluginPanel {
 
 
         gbc.gridy = 0;
-        basePanel.add(createParty, gbc);
+        basePanel.add(createPartyButton, gbc);
         gbc.gridy = 1;
         basePanel.add(joinParty, gbc);
         gbc.gridy = 3;
@@ -82,11 +81,23 @@ public class GroupPanel extends PluginPanel {
         this.add(basePanel, BorderLayout.CENTER);
 
         // Add event listeners
-        ClientThread clientThread = null;
-        createParty.addActionListener(e -> SwingUtilities.invokeLater(() -> {
-            plugin.createParty();
+        createPartyButton.addActionListener(e -> plugin.createParty());
+        joinParty.addActionListener(e -> {
+            String s = (String) JOptionPane.showInputDialog(
+                    joinParty,
+                    "Enter Passphrase",
+                    "Party Passphrase",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    "");
 
-        }));
+            if (s == null)
+            {
+                return;
+            }
+        });
+
 
     }
     public JLabel getDpsLabel() { return dpsLabel; }

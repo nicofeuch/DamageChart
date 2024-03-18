@@ -126,9 +126,9 @@ public class ExamplePlugin extends Plugin
 			double dps = round(myDamageDealt / (client.getTickCount()*0.6) * 100.0)/100.0;
 
 			//client.getLocalPlayer().setOverheadText(String.valueOf(myDamageDealt));
-			client.getLocalPlayer().setOverheadText(String.valueOf(event.getActor().getName()));
+			//client.getLocalPlayer().setOverheadText(String.valueOf(event.getActor().getName()));
 
-			SwingUtilities.invokeLater(() -> {
+			clientThread.invokeLater(() -> {
 				JLabel dpsLabel = ((GroupPanel) panel).getDpsLabel();
 				dpsLabel.setText("1. Stealthshad0 DPS: " + dps + " " + "Damage: " + myDamageDealt);
 
@@ -136,10 +136,11 @@ public class ExamplePlugin extends Plugin
 				// Repaint the panel to reflect changes
 				panel.repaint();
 			});
+
 		}
 	}
 	void createParty() {
-		SwingUtilities.invokeLater(() -> {
+		clientThread.invokeLater(() -> {
 			String passphrase = wsClientPartyService.generatePassphrase(); // Generate passphrase
 			JLabel passphraseLabel = ((GroupPanel) panel).getPassphraseLabel();
 			passphraseLabel.setText(passphrase);
