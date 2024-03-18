@@ -1,4 +1,5 @@
 package com.example;
+import net.runelite.client.party.PartyService;
 import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.PluginPanel;
 
@@ -9,6 +10,9 @@ import java.awt.*;
 import com.google.inject.Inject;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import net.runelite.client.callback.ClientThread;
+import net.runelite.client.party.WSClient;
+
 
 import net.runelite.api.Client;
 
@@ -20,12 +24,15 @@ public class GroupPanel extends PluginPanel {
 
     private final JPanel dpsPanel = new JPanel();
     private final JLabel dpsLabel = new JLabel();
+    JLabel passphraseLabel = new JLabel();
 
     // Buttons
     JButton createParty = new JButton("Create Party");
     JButton joinParty = new JButton("Join Party");
     JButton leaveParty = new JButton("Leave Party");
     JButton copyPassphrase = new JButton("Copy Passphrase");
+
+    PartyService wsClient;
 
 
     @Inject
@@ -41,20 +48,25 @@ public class GroupPanel extends PluginPanel {
         gbc.gridx = GridBagConstraints.RELATIVE; // Align to the left
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+
+
+
         gbc.gridy = 0;
         basePanel.add(createParty, gbc);
         gbc.gridy = 1;
         basePanel.add(joinParty, gbc);
         gbc.gridy = 3;
-        basePanel.add(leaveParty,gbc);
+        basePanel.add(leaveParty, gbc);
         gbc.gridy = 4;
-        basePanel.add(copyPassphrase,gbc);
+        basePanel.add(copyPassphrase, gbc);
+
+        gbc.gridy = 5;
+        passphraseLabel.setText("Passphrase will generate here");
+        basePanel.add(passphraseLabel, gbc);
 
         gbc.gridy = 7;
         gbc.weightx = 1.0; // Make the base panel horizontally resizable
         gbc.weighty = 0.0; // Make the base panel's height fixed
-
-
 
         dpsPanel.setBorder(new EmptyBorder(4, 0, 0, 0));
         dpsPanel.setLayout(new DynamicGridLayout(0, 1, 0, 5));
@@ -65,13 +77,22 @@ public class GroupPanel extends PluginPanel {
 
         basePanel.add(dpsPanel, gbc);
 
+
+
         this.add(basePanel, BorderLayout.CENTER);
 
+        // Add event listeners
+        ClientThread clientThread = null;
+        createParty.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+            plugin.createParty();
+
+        }));
+
     }
-    public JLabel getDpsLabel() {
-        return dpsLabel;
-    }
+    public JLabel getDpsLabel() { return dpsLabel; }
     public JPanel getBasePanel(){ return basePanel; }
+    public JLabel getPassphraseLabel(){ return passphraseLabel; }
+
 
 
 }

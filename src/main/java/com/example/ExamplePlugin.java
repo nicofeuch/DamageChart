@@ -58,13 +58,18 @@ public class ExamplePlugin extends Plugin
 
 	@Inject
 	private WSClient wsClient;
+	@Inject
+	private PartyService wsClientPartyService;
+	@Inject
+	GroupPanel groupPanel;
 
 	private int myDamageDealt;
 	private int seconds;
 	NavigationButton navButton;
 	//boolean addedButton = true;
 
-	GroupPanel Panel;
+
+
 	Instant lastLogout;
 	private PluginPanel panel;
 
@@ -109,7 +114,8 @@ public class ExamplePlugin extends Plugin
 
 		Actor player = client.getLocalPlayer();
 		Actor hitSplatSource = event.getActor();
-		
+
+
 
 		// Check if hitsplat is applied to the player
 		if (((NPC) hitSplatSource).getInteracting() == player) {
@@ -119,7 +125,8 @@ public class ExamplePlugin extends Plugin
 
 			double dps = round(myDamageDealt / (client.getTickCount()*0.6) * 100.0)/100.0;
 
-			client.getLocalPlayer().setOverheadText(String.valueOf(myDamageDealt));
+			//client.getLocalPlayer().setOverheadText(String.valueOf(myDamageDealt));
+			client.getLocalPlayer().setOverheadText(String.valueOf(event.getActor().getName()));
 
 			SwingUtilities.invokeLater(() -> {
 				JLabel dpsLabel = ((GroupPanel) panel).getDpsLabel();
@@ -131,4 +138,14 @@ public class ExamplePlugin extends Plugin
 			});
 		}
 	}
+	void createParty() {
+		SwingUtilities.invokeLater(() -> {
+			String passphrase = wsClientPartyService.generatePassphrase(); // Generate passphrase
+			JLabel passphraseLabel = ((GroupPanel) panel).getPassphraseLabel();
+			passphraseLabel.setText(passphrase);
+			// Repaint the panel to reflect changes
+			panel.repaint();
+		});
+	}
+
 }
