@@ -10,6 +10,9 @@ import java.awt.*;
 import com.google.inject.Inject;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+
 import net.runelite.client.callback.ClientThread;
 
 
@@ -96,6 +99,14 @@ public class GroupPanel extends PluginPanel {
             {
                 return;
             }
+            plugin.wsClientPartyService.changeParty(s);
+        });
+        copyPassphrase.addActionListener(e -> {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(new StringSelection(plugin.getPartyPassphrase()), null);
+        });
+        leaveParty.addActionListener(e -> {
+            plugin.wsClientPartyService.changeParty(null);
         });
 
 

@@ -48,9 +48,6 @@ public class ExamplePlugin extends Plugin
 	private ClientToolbar clientToolbar;
 
 	@Inject
-	private PartyService partyService;
-
-	@Inject
 	private PluginManager pluginManager;
 
 	@Inject
@@ -59,12 +56,13 @@ public class ExamplePlugin extends Plugin
 	@Inject
 	private WSClient wsClient;
 	@Inject
-	private PartyService wsClientPartyService;
+	PartyService wsClientPartyService;
 	@Inject
 	GroupPanel groupPanel;
 
 	private int myDamageDealt;
 	private int seconds;
+	String passphrase = "";
 	NavigationButton navButton;
 	//boolean addedButton = true;
 
@@ -141,7 +139,7 @@ public class ExamplePlugin extends Plugin
 	}
 	void createParty() {
 		clientThread.invokeLater(() -> {
-			String passphrase = wsClientPartyService.generatePassphrase(); // Generate passphrase
+			passphrase = wsClientPartyService.generatePassphrase(); // Generate passphrase
 			JLabel passphraseLabel = ((GroupPanel) panel).getPassphraseLabel();
 			passphraseLabel.setText(passphrase);
 			// Repaint the panel to reflect changes
@@ -149,4 +147,8 @@ public class ExamplePlugin extends Plugin
 		});
 	}
 
+	public String getPartyPassphrase() {
+		return passphrase;
+
+	}
 }
