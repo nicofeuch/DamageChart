@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.data.events.PartyBatchedChange;
 import com.google.inject.Provides;
 
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Actor;
 import net.runelite.api.Client;
 import net.runelite.api.NPC;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.HitsplatApplied;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
@@ -16,6 +18,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
 import net.runelite.client.party.PartyService;
 import net.runelite.client.party.WSClient;
+import net.runelite.client.party.messages.PartyMessage;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
@@ -25,8 +28,10 @@ import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.party.messages.PartyMemberMessage;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.time.Instant;
+import java.util.*;
 
 import static java.lang.Math.round;
 
@@ -61,7 +66,8 @@ public class ExamplePlugin extends Plugin
 	GroupPanel groupPanel;
 
 	private int myDamageDealt;
-	private int seconds;
+	private String userName;
+	private Map<String, Integer> partyMembers = new HashMap<>();
 	String passphrase = "";
 	NavigationButton navButton;
 	//boolean addedButton = true;
@@ -108,6 +114,29 @@ public class ExamplePlugin extends Plugin
 		return configManager.getConfig(ExampleConfig.class);
 	}
 	@Subscribe
+	public void onGameTick(final GameTick tick){
+		if (!wsClientPartyService.isInParty()){
+			return;
+		}
+
+		if (client.getTickCount() % 5 != 0){
+			return;
+		}
+
+		PartyBatchedChange stuff = new PartyBatchedChange(); // Initialize stuff
+		stuff.setPlayerName("RawwrRob");
+		stuff.setDamageDealt(69);
+		stuff.setMemberId(54545454);
+		wsClientPartyService.send(stuff);
+
+		clientThread.invokeLater(() -> {
+			client.getLocalPlayer().setOverheadText(String.valueOf(stuff.getMemberId()));
+		});
+
+
+	}
+
+	@Subscribe
 	public void onHitsplatApplied(HitsplatApplied event) {
 
 		Actor player = client.getLocalPlayer();
@@ -149,6 +178,14 @@ public class ExamplePlugin extends Plugin
 
 	public String getPartyPassphrase() {
 		return passphrase;
-
+	}
+	public int getMyDamageDealt(){
+		return myDamageDealt;
+	}
+	public String getUserName(){
+		return userName;
+	}
+	public void addPartyMember(String userName, int myDamageDealt){
+		partyMembers.put(userName, myDamageDealt);
 	}
 }
